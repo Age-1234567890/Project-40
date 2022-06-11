@@ -1,9 +1,5 @@
 class Game {
-  constructor() {
-    this.resetTitle = createElement("h2");
-    this.resetButton = createButton("");
-
-  }
+  constructor() {}
 
   getState() {
     var gameStateRef = database.ref("gameState");
@@ -24,25 +20,25 @@ class Game {
     form = new Form();
     form.display();
 
-    car1 = createSprite(width / 2 - 50, height - 100);
-    car1.addImage("car1", car1_img);
-    car1.scale = 0.07;
+    animal1 = createSprite(width / 2 - 50, height - 100);
+    animal1.addImage(" animal1",  animal1_img);
+    animal1.scale = 0.07;
 
-    car2 = createSprite(width / 2 + 100, height - 100);
-    car2.addImage("car2", car2_img);
-    car2.scale = 0.07;
+    animal2 = createSprite(width / 2 + 100, height - 100);
+    animal2.addImage(" animal2",  animal2_img);
+    animal2.scale = 0.07;
 
-    cars = [car1, car2];
+    animals = [ animal1,  animal2];
 
     // C38 TA
-    fuels = new Group();
-    powerCoins = new Group();
+    bush = new Group();
+    grass = new Group();
 
     // Adding fuel sprite in the game
-    this.addSprites(fuels, 4, fuelImage, 0.02);
+    this.addSprites(bush, 4, bushImage, 0.02);
 
     // Adding coin sprite in the game
-    this.addSprites(powerCoins, 18, powerCoinImage, 0.09);
+    this.addSprites(grass, 18, grassImage, 0.09);
   }
 
   // C38 TA
@@ -65,20 +61,11 @@ class Game {
     form.hide();
     form.titleImg.position(40, 50);
     form.titleImg.class("gameTitleAfterEffect");
-   
-
-    //C39
-    this.resetTitle.html("Reset Game");
-    this.resetTitle.class("resetText");
-    this.resetTitle.position(width / 2 + 200, 40);
-
-    this.resetButton.class("resetButton");
-    this.resetButton.position(width / 2 + 230, 100);
   }
 
   play() {
     this.handleElements();
-    this.handleResetButton();
+
     Player.getPlayersInfo();
 
     if (allPlayers !== undefined) {
@@ -94,8 +81,8 @@ class Game {
         var x = allPlayers[plr].positionX;
         var y = height - allPlayers[plr].positionY;
 
-        cars[index - 1].position.x = x;
-        cars[index - 1].position.y = y;
+        animals[index - 1].position.x = x;
+        animals[index - 1].position.y = y;
 
         // C38  SA
         if (index === player.index) {
@@ -103,14 +90,11 @@ class Game {
           fill("red");
           ellipse(x, y, 60, 60);
 
-          this.handleFuel(index);
-          this.handlePowerCoins(index);
-          
-          // Changing camera position in y direction
-          camera.position.x = cars[index - 1].position.x;
-          camera.position.y = cars[index - 1].position.y;
+          this.handleBush(index);
+          this.handleGrass(index);
 
-        }
+          // Changing camera position in y direction
+         }
       }
 
       // handling keyboard events
@@ -123,59 +107,39 @@ class Game {
     }
   }
 
-  handleFuel(index) {
+  handleBush(index) {
     // Adding fuel
-    cars[index - 1].overlap(fuels, function(collector, collected) {
-      player.fuel = 185;
+    animals[index - 1].overlap(bush, function(collector, collected) {
+      player.bush = 185;
       //collected is the sprite in the group collectibles that triggered
       //the event
       collected.remove();
     });
   }
 
-  handlePowerCoins(index) {
-    cars[index - 1].overlap(powerCoins, function(collector, collected) {
-      player.score += 21;
-      player.update();
-      //collected is the sprite in the group collectibles that triggered
-      //the event
-      collected.remove();
-    });
-  
-}
+  handleGrass(index){
 
-handleResetButton() {
-  this.resetButton.mousePressed(() => {
-   //set the intial value for players and gamecount.
-database.ref("/").update({
-gameState:0,
-playerCount:0,
-players:{}
-  });
-window.location.reload()
-  })
-}
-handlePlayerControls() {
-  if (keyIsDown(UP_ARROW)) {
-    player.positionY += 10;
-    player.update();
+    // animals[index - 1].overlap(grass, function(collector, collected) {
+    //   player.score += 21;
+    //   player.update();
+    //   collected.remove();
+    // });
 
+
+  //   animals[index - 1].overlap(grass, function(collected, collector) {
+  //     player.score += 21;
+  //     player.update();
+  //     collector.remove();
+  //   });
+
+
+  //   animals[index].overlap(grass, function(collector, collected) {
+  //     player.score += 21;
+  //     player.update();
+  //     collected.update();
+  //   });
 
   }
 
- //fill keydown for left and right
-if (keyIsDown(LEFT_ARROW) && player.positionX>width/3-50){
-player.positionX-10
-player.update()
-}
-
-if (keyIsDown(RIGHT_ARROW) && player.positionX<width/2+300){
-  player.positionX+10
-  player.update()
-}
-
-
-
-
-}
+    
 }
